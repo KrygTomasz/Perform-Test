@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="DropDownSectionView" customModule="Perform_Test" customModuleProvider="target">
+            <connections>
+                <outlet property="containerView" destination="94E-Zf-FIa" id="vZm-zw-EoA"/>
+                <outlet property="separatorView" destination="fHL-le-axv" id="vQL-sF-33L"/>
+                <outlet property="titleButton" destination="laz-7c-7Sb" id="DX9-za-XnW"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="Zo7-9h-NFL">
+            <rect key="frame" x="0.0" y="0.0" width="464" height="69"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="94E-Zf-FIa">
+                    <rect key="frame" x="0.0" y="0.0" width="464" height="69"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fHL-le-axv">
+                            <rect key="frame" x="0.0" y="0.0" width="464" height="1"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="1" id="s4I-fG-kHw"/>
+                            </constraints>
+                        </view>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="laz-7c-7Sb">
+                            <rect key="frame" x="16" y="1" width="432" height="68"/>
+                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="23"/>
+                            <state key="normal" title="Button"/>
+                        </button>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="bottom" secondItem="laz-7c-7Sb" secondAttribute="bottom" id="1in-T0-ken"/>
+                        <constraint firstItem="fHL-le-axv" firstAttribute="top" secondItem="94E-Zf-FIa" secondAttribute="top" id="3CE-wH-hYo"/>
+                        <constraint firstItem="fHL-le-axv" firstAttribute="leading" secondItem="94E-Zf-FIa" secondAttribute="leading" id="8nc-sy-5Te"/>
+                        <constraint firstAttribute="trailing" secondItem="laz-7c-7Sb" secondAttribute="trailing" constant="16" id="XvC-PX-5fF"/>
+                        <constraint firstItem="laz-7c-7Sb" firstAttribute="leading" secondItem="94E-Zf-FIa" secondAttribute="leading" constant="16" id="hb9-l8-WVZ"/>
+                        <constraint firstItem="laz-7c-7Sb" firstAttribute="top" secondItem="fHL-le-axv" secondAttribute="bottom" id="hsA-59-U5C"/>
+                        <constraint firstAttribute="trailing" secondItem="fHL-le-axv" secondAttribute="trailing" id="mSn-x9-zun"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="94E-Zf-FIa" firstAttribute="top" secondItem="Zo7-9h-NFL" secondAttribute="top" id="8bF-k5-45D"/>
+                <constraint firstItem="Mz4-s3-lBd" firstAttribute="trailing" secondItem="94E-Zf-FIa" secondAttribute="trailing" id="91n-0v-IuI"/>
+                <constraint firstItem="94E-Zf-FIa" firstAttribute="leading" secondItem="Mz4-s3-lBd" secondAttribute="leading" id="Jo3-Ms-0sk"/>
+                <constraint firstAttribute="bottom" secondItem="94E-Zf-FIa" secondAttribute="bottom" id="nar-L8-bvr"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <viewLayoutGuide key="safeArea" id="Mz4-s3-lBd"/>
+            <point key="canvasLocation" x="49" y="-394.5"/>
+        </view>
+    </objects>
+</document>
