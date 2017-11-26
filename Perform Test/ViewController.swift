@@ -50,6 +50,8 @@ class ViewController: UIViewController {
             tableView.estimatedRowHeight = 100.0
             tableView.register(R.nib.standingsTableViewCell(), forCellReuseIdentifier: "StandingsTableViewCell")
             tableView.register(R.nib.scoresTableViewCell(), forCellReuseIdentifier: "ScoresTableViewCell")
+            tableView.register(R.nib.scoresHeaderView(), forHeaderFooterViewReuseIdentifier: "ScoresHeaderView")
+            tableView.register(R.nib.standingsHeaderView(), forHeaderFooterViewReuseIdentifier: "StandingsHeaderView")
             tableView.delegate = self
             tableView.dataSource = self
         }
@@ -65,9 +67,10 @@ class ViewController: UIViewController {
                 return
             case .scores:
                 indicator?.show(description: "Pobieram dane...")
-                RequestManager().getScores(completion: { success, scores in
+                RequestManager().getScores(completion: { success, scores, date in
                     self.scores = scores
                     self.reloadDataAfterResponse(wasSuccessful: success)
+                    self.setScoresDate(to: date)
                 })
                 startTimer()
             case .standings:
@@ -92,7 +95,9 @@ class ViewController: UIViewController {
     }
     private var standings: [Standing] = []
     private var scores: [Score] = []
+    private var scoreDate: String = ""
     private var timer: Timer?
+    private let AUTO_REFRESH_INTERVAL: Double = 3.0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -144,7 +149,7 @@ class ViewController: UIViewController {
 extension ViewController {
     
     fileprivate func startTimer() {
-        timer = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(onTimerUpdate), userInfo: nil, repeats: true)
+        timer = Timer.scheduledTimer(timeInterval: AUTO_REFRESH_INTERVAL, target: self, selector: #selector(onTimerUpdate), userInfo: nil, repeats: true)
     }
     
     fileprivate func stopTimer() {
@@ -158,12 +163,20 @@ extension ViewController {
     }
     
     fileprivate func scoresUpdate() {
-        RequestManager().getScores(completion: { success, scores in
+        RequestManager().getScores(completion: { success, scores, date in
             if success {
                 self.scores = scores
                 self.reloadDataAfterResponse(wasSuccessful: success)
+                self.setScoresDate(to: date)
             }
         })
+    }
+    
+    func setScoresDate(to date: Date?) {
+        guard let date = date else { return }
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd MMMM yyyy"
+        self.scoreDate = dateFormatter.string(from: date)
     }
     
 }
@@ -229,6 +242,38 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         default:
             return
         }
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        switch tableViewType {
+        case .news:
+            return getNewsHeader()
+        case .scores:
+            return getScoresHeader()
+        case .standings:
+            return getStandingsHeader()
+        default:
+            return UIView()
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 40
+    }
+    
+    func getNewsHeader() -> UIView {
+        return UIView()
+    }
+    
+    func getScoresHeader() -> UIView {
+        guard let scoresHeaderView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "ScoresHeaderView") as? ScoresHeaderView else { return UIView() }
+        scoresHeaderView.dateString = scoreDate
+        return scoresHeaderView
+    }
+    
+    func getStandingsHeader() -> UIView {
+        guard let standingsHeaderView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "StandingsHeaderView") as? StandingsHeaderView else { return UIView() }
+        return standingsHeaderView
     }
     
 }

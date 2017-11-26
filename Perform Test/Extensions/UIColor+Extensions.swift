@@ -36,6 +36,10 @@ extension UIColor {
         return UIColor(hex: "#19425E")
     }
     
+    public class var darkMain: UIColor {
+        return UIColor(hex: "#062033")
+    }
+    
     public class var tint: UIColor {
         return UIColor(hex: "#1D4D6E")
     }

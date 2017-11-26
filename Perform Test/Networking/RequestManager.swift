@@ -30,7 +30,7 @@ class RequestManager {
         let task = session.dataTask(with: request) {
             (data, response, error) in
             guard let dataObj = data else {
-                print("dataTaskWithRequest error: \(String(describing: error))")
+                NSLog("Error: \(String(describing: error))")
                 success = false
                 completion(success, standings)
                 return
@@ -46,18 +46,19 @@ class RequestManager {
         task.resume()
     }
     
-    typealias ScoresCompletion = (Bool, [Score])->()
+    typealias ScoresCompletion = (Bool, [Score], Date?)->()
     func getScores(completion: @escaping ScoresCompletion) {
         let request = getGetRequest(for: scoresEndpoint)
         let session = URLSession.shared
         var success: Bool = true
         var scores: [Score] = []
+        var date: Date?
         let task = session.dataTask(with: request) {
             (data, response, error) in
             guard let dataObj = data else {
-                print("dataTaskWithRequest error: \(String(describing: error))")
+                NSLog("Error: \(String(describing: error))")
                 success = false
-                completion(success, scores)
+                completion(success, scores, nil)
                 return
             }
             let xml = SWXMLHash.parse(dataObj)
@@ -69,7 +70,17 @@ class RequestManager {
                     scores.append(score)
                 }
             }
-            completion(success, scores)
+            let parameters = xml["gsmrs"]["method"]["parameter"].all
+            for parameter in parameters {
+                if let name = parameter.element?.attribute(by: "name")?.text,
+                    name == "date" {
+                    guard let dateString = parameter.element?.attribute(by: "value")?.text else { return }
+                    let dateFormatter = DateFormatter()
+                    dateFormatter.dateFormat = "yyyy-MM-dd"
+                    date = dateFormatter.date(from: dateString)
+                }
+            }
+            completion(success, scores, date)
         }
         task.resume()
     }

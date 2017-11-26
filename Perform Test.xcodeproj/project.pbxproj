@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		1CA21E0E9BC1A473896FD02A /* Pods_Perform_Test.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E68A5F189F67DC432A2185DB /* Pods_Perform_Test.framework */; };
 		223619761FCAD7C80017157B /* RowColorTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223619751FCAD7C70017157B /* RowColorTableViewCell.swift */; };
+		2236197F1FCAE1330017157B /* StandingsHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2236197E1FCAE1330017157B /* StandingsHeaderView.swift */; };
+		223619811FCAE1400017157B /* ScoresHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223619801FCAE1400017157B /* ScoresHeaderView.swift */; };
+		223619831FCAE14B0017157B /* ScoresHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 223619821FCAE14B0017157B /* ScoresHeaderView.xib */; };
+		223619851FCAE4440017157B /* StandingsHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 223619841FCAE4440017157B /* StandingsHeaderView.xib */; };
 		2298BCF01FCA289E00F98D38 /* RequestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2298BCEF1FCA289E00F98D38 /* RequestManager.swift */; };
 		2298BCF31FCA310500F98D38 /* Standing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2298BCF21FCA310500F98D38 /* Standing.swift */; };
 		2298BCF51FCA3B9C00F98D38 /* XMLAttribute+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2298BCF41FCA3B9C00F98D38 /* XMLAttribute+Extensions.swift */; };
@@ -33,6 +37,10 @@
 
 /* Begin PBXFileReference section */
 		223619751FCAD7C70017157B /* RowColorTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RowColorTableViewCell.swift; sourceTree = "<group>"; };
+		2236197E1FCAE1330017157B /* StandingsHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandingsHeaderView.swift; sourceTree = "<group>"; };
+		223619801FCAE1400017157B /* ScoresHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoresHeaderView.swift; sourceTree = "<group>"; };
+		223619821FCAE14B0017157B /* ScoresHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ScoresHeaderView.xib; sourceTree = "<group>"; };
+		223619841FCAE4440017157B /* StandingsHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StandingsHeaderView.xib; sourceTree = "<group>"; };
 		2298BCEF1FCA289E00F98D38 /* RequestManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestManager.swift; sourceTree = "<group>"; };
 		2298BCF21FCA310500F98D38 /* Standing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Standing.swift; sourceTree = "<group>"; };
 		2298BCF41FCA3B9C00F98D38 /* XMLAttribute+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XMLAttribute+Extensions.swift"; sourceTree = "<group>"; };
@@ -95,6 +103,41 @@
 			children = (
 			);
 			path = News;
+			sourceTree = "<group>";
+		};
+		2236197A1FCAE0EB0017157B /* Section Headers */ = {
+			isa = PBXGroup;
+			children = (
+				2236197B1FCAE1010017157B /* News */,
+				2236197C1FCAE1060017157B /* Scores */,
+				2236197D1FCAE1130017157B /* Standings */,
+			);
+			path = "Section Headers";
+			sourceTree = "<group>";
+		};
+		2236197B1FCAE1010017157B /* News */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = News;
+			sourceTree = "<group>";
+		};
+		2236197C1FCAE1060017157B /* Scores */ = {
+			isa = PBXGroup;
+			children = (
+				223619801FCAE1400017157B /* ScoresHeaderView.swift */,
+				223619821FCAE14B0017157B /* ScoresHeaderView.xib */,
+			);
+			path = Scores;
+			sourceTree = "<group>";
+		};
+		2236197D1FCAE1130017157B /* Standings */ = {
+			isa = PBXGroup;
+			children = (
+				2236197E1FCAE1330017157B /* StandingsHeaderView.swift */,
+				223619841FCAE4440017157B /* StandingsHeaderView.xib */,
+			);
+			path = Standings;
 			sourceTree = "<group>";
 		};
 		2298BCEE1FCA288000F98D38 /* Networking */ = {
@@ -160,6 +203,7 @@
 				22C95DA91FC9848100C9ED35 /* ViewController.swift */,
 				22C95DAB1FC9848100C9ED35 /* Main.storyboard */,
 				2298BCF71FCA3D9000F98D38 /* Cells */,
+				2236197A1FCAE0EB0017157B /* Section Headers */,
 				2298BCEE1FCA288000F98D38 /* Networking */,
 				2298BCF11FCA30A000F98D38 /* Models */,
 				22C95DC51FC99B3000C9ED35 /* DropDownSections */,
@@ -271,12 +315,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				223619831FCAE14B0017157B /* ScoresHeaderView.xib in Resources */,
 				22C95DB51FC9848100C9ED35 /* LaunchScreen.storyboard in Resources */,
 				22C95DC01FC987DC00C9ED35 /* DropDownSectionView.xib in Resources */,
 				22D4EC571FCA5E0F00981A3D /* ScoresTableViewCell.xib in Resources */,
 				22C95DB21FC9848100C9ED35 /* Assets.xcassets in Resources */,
 				2298BCFB1FCA3DA700F98D38 /* StandingsTableViewCell.xib in Resources */,
 				22C95DAD1FC9848100C9ED35 /* Main.storyboard in Resources */,
+				223619851FCAE4440017157B /* StandingsHeaderView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -351,10 +397,12 @@
 				22C95DAA1FC9848100C9ED35 /* ViewController.swift in Sources */,
 				22C95DC81FC99EBE00C9ED35 /* R.generated.swift in Sources */,
 				22C95DC21FC993BD00C9ED35 /* UIColor+Extensions.swift in Sources */,
+				2236197F1FCAE1330017157B /* StandingsHeaderView.swift in Sources */,
 				22C95DBE1FC987C600C9ED35 /* DropDownSectionView.swift in Sources */,
 				223619761FCAD7C80017157B /* RowColorTableViewCell.swift in Sources */,
 				22D4EC561FCA5E0F00981A3D /* ScoresTableViewCell.swift in Sources */,
 				22C95DC41FC999BA00C9ED35 /* UIImage+Extensions.swift in Sources */,
+				223619811FCAE1400017157B /* ScoresHeaderView.swift in Sources */,
 				2298BCF01FCA289E00F98D38 /* RequestManager.swift in Sources */,
 				2298BCFA1FCA3DA700F98D38 /* StandingsTableViewCell.swift in Sources */,
 				2298BCFD1FCA551900F98D38 /* Indicator.swift in Sources */,
