@@ -89,7 +89,6 @@
                     </constraints>
                 </view>
             </subviews>
-            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
             <constraints>
                 <constraint firstItem="vPW-rg-pLX" firstAttribute="trailing" secondItem="Yub-Hf-hiZ" secondAttribute="trailing" id="2ww-bm-Hfd"/>
                 <constraint firstItem="vPW-rg-pLX" firstAttribute="bottom" secondItem="Yub-Hf-hiZ" secondAttribute="bottom" id="8ZR-I0-u4E"/>

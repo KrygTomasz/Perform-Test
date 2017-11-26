@@ -11,6 +11,7 @@ import SWXMLHash
 
 class RequestManager {
     
+    private let newsEndpoint = "htt://www.mobilefeeds.performgroup.com/utilities/interviews/techtest/latestnews.xml"
     private let scoresEndpoint = "http://www.mobilefeeds.performgroup.com/utilities/interviews/techtest/scores.xml"
     private let standingsEndpoint = "http://www.mobilefeeds.performgroup.com/utilities/interviews/techtest/standings.xml"
     
@@ -72,12 +73,11 @@ class RequestManager {
             }
             let parameters = xml["gsmrs"]["method"]["parameter"].all
             for parameter in parameters {
-                if let name = parameter.element?.attribute(by: "name")?.text,
-                    name == "date" {
-                    guard let dateString = parameter.element?.attribute(by: "value")?.text else { return }
-                    let dateFormatter = DateFormatter()
-                    dateFormatter.dateFormat = "yyyy-MM-dd"
-                    date = dateFormatter.date(from: dateString)
+                if
+                    let name = parameter.element?.attribute(by: "name")?.text,
+                    name == "date",
+                    let dateObj = parameter.element?.attribute(by: "value")?.date(withFormat: "yyyy-MM-dd") {
+                        date = dateObj
                 }
             }
             completion(success, scores, date)

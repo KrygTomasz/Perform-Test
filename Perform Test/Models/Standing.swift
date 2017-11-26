@@ -10,7 +10,7 @@ import SWXMLHash
 
 class Standing {
     
-    var rank: String = "00"
+    var rank: String = "0"
     var clubName: String = "–"
     var playedMatches: Int = 0
     var wins: Int = 0

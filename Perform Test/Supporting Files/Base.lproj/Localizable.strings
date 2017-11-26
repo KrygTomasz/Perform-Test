@@ -1,0 +1,21 @@
+/* 
+  Localizable.strings
+  Perform Test
+
+  Created by Kryg Tomasz on 26.11.2017.
+  Copyright © 2017 Kryg Tomasz. All rights reserved.
+*/
+
+"appName" = "Perform Test";
+"news" = "News";
+"scores" = "Scores";
+"standings" = "Standings";
+"downloading" = "Downloading";
+"checkConnectionTryAgain" = "Check your internet connection and try again";
+"club" = "Club";
+"playedMatchesShortcut" = "P";
+"winsShortcut" = "W";
+"drawsShortcut" = "D";
+"lostsShortcut" = "L";
+"goalDifferenceShortcut" = "GD";
+"pointsShortcut" = "Pts";

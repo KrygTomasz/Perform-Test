@@ -17,43 +17,43 @@ class StandingsHeaderView: UITableViewHeaderFooterView {
     }
     @IBOutlet weak var clubLabel: UILabel! {
         didSet {
-            clubLabel.text = "Club"
+            clubLabel.text = R.string.localizable.club()
             clubLabel.textColor = .text
         }
     }
     @IBOutlet weak var playedMatchesLabel: UILabel! {
         didSet {
-            playedMatchesLabel.text = "P"
+            playedMatchesLabel.text = R.string.localizable.playedMatchesShortcut()
             playedMatchesLabel.textColor = .text
         }
     }
     @IBOutlet weak var winsLabel: UILabel! {
         didSet {
-            winsLabel.text = "W"
+            winsLabel.text = R.string.localizable.winsShortcut()
             winsLabel.textColor = .text
         }
     }
     @IBOutlet weak var drawsLabel: UILabel! {
         didSet {
-            drawsLabel.text = "D"
+            drawsLabel.text = R.string.localizable.drawsShortcut()
             drawsLabel.textColor = .text
         }
     }
     @IBOutlet weak var lostsLabel: UILabel! {
         didSet {
-            lostsLabel.text = "L"
+            lostsLabel.text = R.string.localizable.lostsShortcut()
             lostsLabel.textColor = .text
         }
     }
     @IBOutlet weak var goalDiferenceLabel: UILabel! {
         didSet {
-            goalDiferenceLabel.text = "GD"
+            goalDiferenceLabel.text = R.string.localizable.goalDifferenceShortcut()
             goalDiferenceLabel.textColor = .text
         }
     }
     @IBOutlet weak var pointsLabel: UILabel! {
         didSet {
-            pointsLabel.text = "Pts"
+            pointsLabel.text = R.string.localizable.pointsShortcut()
             pointsLabel.textColor = .text
         }
     }

@@ -13,7 +13,7 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var newsDropDownView: DropDownSectionView! {
         didSet {
-            newsDropDownView.title = "News"
+            newsDropDownView.title = R.string.localizable.news()
             newsDropDownView.isHidden = true
             newsDropDownView.appTheme()
             newsDropDownView.sectionType = .news
@@ -22,7 +22,7 @@ class ViewController: UIViewController {
     }
     @IBOutlet weak var scoresDropDownView: DropDownSectionView! {
         didSet {
-            scoresDropDownView.title = "Scores"
+            scoresDropDownView.title = R.string.localizable.scores()
             scoresDropDownView.isHidden = true
             scoresDropDownView.appTheme()
             scoresDropDownView.sectionType = .scores
@@ -31,7 +31,7 @@ class ViewController: UIViewController {
     }
     @IBOutlet weak var standingsDropDownView: DropDownSectionView! {
         didSet {
-            standingsDropDownView.title = "Standings"
+            standingsDropDownView.title = R.string.localizable.standings()
             standingsDropDownView.isHidden = true
             standingsDropDownView.appTheme()
             standingsDropDownView.sectionType = .standings
@@ -66,7 +66,7 @@ class ViewController: UIViewController {
                 self.tableView.reloadData()
                 return
             case .scores:
-                indicator?.show(description: "Pobieram dane...")
+                indicator?.show(description: "\(R.string.localizable.downloading())...")
                 RequestManager().getScores(completion: { success, scores, date in
                     self.scores = scores
                     self.reloadDataAfterResponse(wasSuccessful: success)
@@ -74,7 +74,7 @@ class ViewController: UIViewController {
                 })
                 startTimer()
             case .standings:
-                indicator?.show(description: "Pobieram dane...")
+                indicator?.show(description: "\(R.string.localizable.downloading())...")
                 RequestManager().getStanding(completion: { success, standings in
                     self.standings = standings
                     self.reloadDataAfterResponse(wasSuccessful: success)
@@ -97,7 +97,7 @@ class ViewController: UIViewController {
     private var scores: [Score] = []
     private var scoreDate: String = ""
     private var timer: Timer?
-    private let AUTO_REFRESH_INTERVAL: Double = 3.0
+    private let AUTO_REFRESH_INTERVAL: Double = 30.0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -110,7 +110,7 @@ class ViewController: UIViewController {
         self.navigationController?.navigationBar.barStyle = .black
         self.navigationController?.navigationBar.barTintColor = .main
         self.navigationController?.navigationBar.tintColor = .text
-        self.navigationController?.navigationBar.topItem?.title = "Perform Test"
+        self.navigationController?.navigationBar.topItem?.title = R.string.localizable.appName()
         setDropDownButton()
     }
     
@@ -139,7 +139,7 @@ class ViewController: UIViewController {
     private func reloadDataAfterResponse(wasSuccessful success: Bool) {
         DispatchQueue.main.async {
             self.tableView.reloadData()
-            self.indicator?.hide(success: success, failedDescription: "Sprawdź połączenie z internetem i spróbuj ponownie")
+            self.indicator?.hide(success: success, failedDescription: R.string.localizable.checkConnectionTryAgain())
         }
     }
     
@@ -173,7 +173,11 @@ extension ViewController {
     }
     
     func setScoresDate(to date: Date?) {
-        guard let date = date else { return }
+        guard let date = date else {
+            scoreDate = "–"
+            NSLog("Wrong date format from web service")
+            return
+        }
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd MMMM yyyy"
         self.scoreDate = dateFormatter.string(from: date)
