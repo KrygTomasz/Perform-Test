@@ -8,5 +8,6 @@ target 'Perform Test' do
   # Pods for Perform Test
     pod 'R.swift'
     pod 'SWXMLHash'
+    pod 'MBProgressHUD', '~> 1.1.0'
 
 end

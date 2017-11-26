@@ -12,6 +12,13 @@ protocol DropDownSectionDelegate: class {
     func onDropDownSectionClicked(_ dropDownSection: DropDownSectionView)
 }
 
+enum DropDownSectionType {
+    case news
+    case scores
+    case standings
+    case unknown
+}
+
 class DropDownSectionView: UIView {
     
     @IBOutlet weak var containerView: UIView!
@@ -28,6 +35,7 @@ class DropDownSectionView: UIView {
             titleButton.setTitle(title, for: .normal)
         }
     }
+    var sectionType: DropDownSectionType = .unknown
     var delegate: DropDownSectionDelegate?
     
     override init(frame: CGRect) {
@@ -71,7 +79,7 @@ extension DropDownSectionView {
 extension DropDownSectionView {
     
     func appTheme() {
-        containerView.backgroundColor = .tint
+        containerView.backgroundColor = .lightMain
         titleButton.setTitleColor(.text, for: .normal)
         separatorView.backgroundColor = .text
     }

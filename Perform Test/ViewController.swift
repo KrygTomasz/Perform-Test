@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MBProgressHUD
 
 class ViewController: UIViewController {
     
@@ -15,6 +16,7 @@ class ViewController: UIViewController {
             newsDropDownView.title = "News"
             newsDropDownView.isHidden = true
             newsDropDownView.appTheme()
+            newsDropDownView.sectionType = .news
             newsDropDownView.delegate = self
         }
     }
@@ -23,6 +25,7 @@ class ViewController: UIViewController {
             scoresDropDownView.title = "Scores"
             scoresDropDownView.isHidden = true
             scoresDropDownView.appTheme()
+            scoresDropDownView.sectionType = .scores
             scoresDropDownView.delegate = self
         }
     }
@@ -31,6 +34,7 @@ class ViewController: UIViewController {
             standingsDropDownView.title = "Standings"
             standingsDropDownView.isHidden = true
             standingsDropDownView.appTheme()
+            standingsDropDownView.sectionType = .standings
             standingsDropDownView.delegate = self
         }
     }
@@ -42,13 +46,57 @@ class ViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView! {
         didSet {
             tableView.backgroundColor = .main
+            tableView.rowHeight = UITableViewAutomaticDimension
+            tableView.estimatedRowHeight = 100.0
+            tableView.register(R.nib.standingsTableViewCell(), forCellReuseIdentifier: "StandingsTableViewCell")
+            tableView.register(R.nib.scoresTableViewCell(), forCellReuseIdentifier: "ScoresTableViewCell")
+            tableView.delegate = self
+            tableView.dataSource = self
         }
     }
     
-    private var rankingTeams: [RankingTeam] = []
+    private var indicator: Indicator?
+    private var tableViewType: DropDownSectionType = .news {
+        didSet {
+            stopTimer()
+            switch tableViewType {
+            case .news:
+                self.tableView.reloadData()
+                return
+            case .scores:
+                indicator?.show(description: "Pobieram dane...")
+                RequestManager().getScores(completion: { success, scores in
+                    self.scores = scores
+                    self.reloadDataAfterResponse(wasSuccessful: success)
+                })
+                startTimer()
+            case .standings:
+                indicator?.show(description: "Pobieram dane...")
+                RequestManager().getStanding(completion: { success, standings in
+                    self.standings = standings
+                    self.reloadDataAfterResponse(wasSuccessful: success)
+                })
+            default:
+                self.tableView.reloadData()
+                return
+            }
+        }
+    }
+    private var isDropDownExpanded: Bool = false {
+        didSet {
+            self.newsDropDownView.isHidden = !isDropDownExpanded
+            self.scoresDropDownView.isHidden = !isDropDownExpanded
+            self.standingsDropDownView.isHidden = !isDropDownExpanded
+            setDropDownButton()
+        }
+    }
+    private var standings: [Standing] = []
+    private var scores: [Score] = []
+    private var timer: Timer?
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        indicator = Indicator(in: self.view)
         self.view.backgroundColor = .tint
         initNavigationBar()
     }
@@ -58,27 +106,129 @@ class ViewController: UIViewController {
         self.navigationController?.navigationBar.barTintColor = .main
         self.navigationController?.navigationBar.tintColor = .text
         self.navigationController?.navigationBar.topItem?.title = "Perform Test"
-        let expandImage = R.image.expand()?.resize(to: CGSize(width: 24, height: 24))
-        let rightBarButton = UIBarButtonItem(image: expandImage, style: .plain, target: self, action: #selector(onDropDownButtonClicked))
+        setDropDownButton()
+    }
+    
+    private func setDropDownButton() {
+        let image: UIImage!
+        if isDropDownExpanded {
+            image = R.image.fold()?.resize(to: CGSize(width: 24, height: 24))
+        } else {
+            image = R.image.expand()?.resize(to: CGSize(width: 24, height: 24))
+        }
+        let rightBarButton = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(onDropDownButtonClicked))
         self.navigationItem.rightBarButtonItem  = rightBarButton
     }
     
     @objc func onDropDownButtonClicked() {
-        self.newsDropDownView.isHidden = !self.newsDropDownView.isHidden
-        self.scoresDropDownView.isHidden = !self.scoresDropDownView.isHidden
-        self.standingsDropDownView.isHidden = !self.standingsDropDownView.isHidden
+        toggleDropDown()
+    }
+    
+    fileprivate func toggleDropDown() {
+        isDropDownExpanded = !isDropDownExpanded
         UIView.animate(withDuration: 0.3, animations: {
             self.view.layoutIfNeeded()
         })
     }
     
+    private func reloadDataAfterResponse(wasSuccessful success: Bool) {
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+            self.indicator?.hide(success: success, failedDescription: "Sprawdź połączenie z internetem i spróbuj ponownie")
+        }
+    }
+    
 }
 
-extension ViewController: DropDownSectionDelegate {
-    func onDropDownSectionClicked(_ dropDownSection: DropDownSectionView) {
-        print(dropDownSection.title)
-        RequestManager().getTeamRanking(completion: { (rankingTeams) in
-            self.rankingTeams = rankingTeams
+//MARK: Handling scores view automatic update
+extension ViewController {
+    
+    fileprivate func startTimer() {
+        timer = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(onTimerUpdate), userInfo: nil, repeats: true)
+    }
+    
+    fileprivate func stopTimer() {
+        timer?.invalidate()
+    }
+    
+    @objc func onTimerUpdate() {
+        if tableViewType == .scores {
+            scoresUpdate()
+        }
+    }
+    
+    fileprivate func scoresUpdate() {
+        RequestManager().getScores(completion: { success, scores in
+            if success {
+                self.scores = scores
+                self.reloadDataAfterResponse(wasSuccessful: success)
+            }
         })
     }
+    
+}
+
+//MARK: Handling DropDown sections click
+extension ViewController: DropDownSectionDelegate {
+    
+    func onDropDownSectionClicked(_ dropDownSection: DropDownSectionView) {
+        toggleDropDown()
+        print(dropDownSection.title)
+        tableViewType = dropDownSection.sectionType
+    }
+    
+}
+
+//MARK: TableView delegates
+extension ViewController: UITableViewDelegate, UITableViewDataSource {
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        switch tableViewType {
+        case .news:
+            return 0
+        case .scores:
+            return scores.count
+        case .standings:
+            return standings.count
+        default:
+            return 0
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        switch tableViewType {
+        case .news:
+            return UITableViewCell()
+        case .scores:
+            guard let scoresCell = tableView.dequeueReusableCell(withIdentifier: "ScoresTableViewCell", for: indexPath) as? ScoresTableViewCell else { return UITableViewCell() }
+            return scoresCell
+        case .standings:
+            guard let standingsCell = tableView.dequeueReusableCell(withIdentifier: "StandingsTableViewCell", for: indexPath) as? StandingsTableViewCell else { return UITableViewCell() }
+            return standingsCell
+        default:
+            return UITableViewCell()
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        switch tableViewType {
+        case .news:
+            return
+        case .scores:
+            guard let scoresCell = cell as? ScoresTableViewCell else { return }
+            scoresCell.score = scores[indexPath.row]
+            scoresCell.row = indexPath.row
+        case .standings:
+            guard let standingsCell = cell as? StandingsTableViewCell else { return }
+            standingsCell.standing = standings[indexPath.row]
+            standingsCell.row = indexPath.row
+        default:
+            return
+        }
+    }
+    
 }
