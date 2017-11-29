@@ -11,7 +11,7 @@ import SWXMLHash
 class News {
     
     var title: String = ""
-    var pubDate: String = ""
+    var pubDate: Date?
     var imageURL: URL?
     var description: String = ""
     var linkURL: URL?
@@ -23,7 +23,8 @@ class News {
             news.title = title
         }
         let pubDateXml = xmlIndexer["pubDate"]
-        if let pubDate = pubDateXml.element?.text {
+        let rfc822Format = "EEE, dd MMM yyyy HH:mm:ss z"
+        if let pubDate = pubDateXml.element?.date(withFormat: rfc822Format) {
             news.pubDate = pubDate
         }
         let imageXml = xmlIndexer["enclosure"].element
@@ -37,6 +38,14 @@ class News {
             news.linkURL = url
         }
         return news
+    }
+    
+    func getDateString(withFormat format: String) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = format
+        guard let date = pubDate else { return "" }
+        let dateString = dateFormatter.string(from: date)
+        return dateString
     }
     
 }

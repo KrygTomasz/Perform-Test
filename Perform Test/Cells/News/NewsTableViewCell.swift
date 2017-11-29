@@ -23,13 +23,7 @@ class NewsTableViewCell: RowColorTableViewCell {
     }
     @IBOutlet weak var publicationDateLabel: UILabel! {
         didSet {
-            publicationDateLabel.textColor = .text
-        }
-    }
-    @IBOutlet weak var goToNewsImageView: UIImageView! {
-        didSet {
-            goToNewsImageView.image = R.image.right()?.withRenderingMode(.alwaysTemplate)
-            goToNewsImageView.tintColor = .text
+            publicationDateLabel.textColor = .lightGray
         }
     }
     
@@ -37,7 +31,7 @@ class NewsTableViewCell: RowColorTableViewCell {
         didSet {
             guard let news = news else { return }
             titleLabel.text = news.title
-            publicationDateLabel.text = news.pubDate
+            publicationDateLabel.text = news.getDateString(withFormat: "EEEE, dd MMMM yyyy, HH:mm")
             RequestManager.downloadImage(url: news.imageURL, completion: setThumbnailImage(_:))
         }
     }
@@ -47,7 +41,7 @@ class NewsTableViewCell: RowColorTableViewCell {
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
+        super.setSelected(false, animated: animated)
     }
     
     private func setThumbnailImage(_ image: UIImage?) {

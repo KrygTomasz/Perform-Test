@@ -70,18 +70,21 @@ class ViewController: MainViewController {
                     self.news = news
                     self.reloadDataAfterResponse(wasSuccessful: success)
                 })
+                tableView.allowsSelection = true
             case .scores:
                 RequestManager().getScores(completion: { success, scores, date in
                     self.scores = scores
                     self.reloadDataAfterResponse(wasSuccessful: success)
                     self.setScoresDate(to: date)
                 })
+                tableView.allowsSelection = false
                 startTimer()
             case .standings:
                 RequestManager().getStandings(completion: { success, standings in
                     self.standings = standings
                     self.reloadDataAfterResponse(wasSuccessful: success)
                 })
+                tableView.allowsSelection = false
             default:
                 self.reloadDataAfterResponse(wasSuccessful: true)
                 return
@@ -162,6 +165,8 @@ class ViewController: MainViewController {
     private func reloadDataAfterResponse(wasSuccessful success: Bool) {
         DispatchQueue.main.async {
             self.tableView.reloadData()
+            let topIndexPath = IndexPath(row: 0, section: 0)
+            self.tableView.scrollToRow(at: topIndexPath, at: .top, animated: false)
             self.indicator?.hide(success: success, failedDescription: R.string.localizable.checkConnectionTryAgain())
         }
     }

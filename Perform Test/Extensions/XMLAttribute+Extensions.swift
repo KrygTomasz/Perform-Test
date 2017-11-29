@@ -25,3 +25,15 @@ extension XMLAttribute {
     }
     
 }
+
+extension XMLElement {
+    
+    func date(withFormat format: String) -> Date? {
+        let dateString = self.text
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = format
+        let date = dateFormatter.date(from: dateString)
+        return date
+    }
+    
+}

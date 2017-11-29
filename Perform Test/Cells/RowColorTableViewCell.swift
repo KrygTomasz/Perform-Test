@@ -19,8 +19,20 @@ class RowColorTableViewCell: UITableViewCell {
         }
     }
     
+    override func setHighlighted(_ highlighted: Bool, animated: Bool) {
+        if highlighted {
+            setHighlightedRowColor()
+        } else {
+            setRowColor()
+        }
+    }
+    
     private func setRowColor() {
         row % 2 == 0 ? (self.contentView.backgroundColor = .tint) : (self.contentView.backgroundColor = .main)
+    }
+    
+    private func setHighlightedRowColor() {
+        contentView.backgroundColor = .selection
     }
     
 }

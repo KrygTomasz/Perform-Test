@@ -22,6 +22,7 @@ class WebViewController: MainViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         prepareNavigationBar(title: "Sample VC")
+        initBarButton()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -32,6 +33,15 @@ class WebViewController: MainViewController {
         guard let url = url else { return }
         let request = URLRequest(url: url)
         webView.load(request)
+    }
+    
+    private func initBarButton() {
+        let closeBarButton = UIBarButtonItem(title: R.string.localizable.close(), style: .plain, target: self, action: #selector(onCloseButtonClicked))
+        navigationItem.leftBarButtonItem = closeBarButton
+    }
+    
+    @objc func onCloseButtonClicked() {
+        dismiss(animated: true, completion: nil)
     }
 
 }
