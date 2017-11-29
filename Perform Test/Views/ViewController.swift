@@ -9,7 +9,7 @@
 import UIKit
 import MBProgressHUD
 
-class ViewController: UIViewController {
+class ViewController: MainViewController {
     
     @IBOutlet private weak var newsDropDownView: DropDownSectionView! {
         didSet {
@@ -113,10 +113,7 @@ class ViewController: UIViewController {
     }
     
     private func initNavigationBar() {
-        self.navigationController?.navigationBar.barStyle = .black
-        self.navigationController?.navigationBar.barTintColor = .main
-        self.navigationController?.navigationBar.tintColor = .text
-        self.navigationController?.navigationBar.topItem?.title = R.string.localizable.appName()
+        prepareNavigationBar(title: R.string.localizable.appName())
         setDropDownButton()
     }
     
@@ -299,6 +296,24 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
             return HEADER_HEIGHT
         default:
             return 0
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        switch tableViewType {
+        case .news:
+            let row = indexPath.row
+            let selectedNews = news[row]
+            guard let webViewController = R.storyboard.main().instantiateViewController(withIdentifier: "WebViewController") as? WebViewController else { return }
+            webViewController.url = selectedNews.linkURL
+            let navigationController = UINavigationController(rootViewController: webViewController)
+            present(navigationController, animated: true, completion: nil)
+        case .scores:
+            return
+        case .standings:
+            return
+        default:
+            return
         }
     }
     

@@ -113,3 +113,32 @@ class RequestManager {
     }
     
 }
+
+//MARK: Downloading image from url
+extension RequestManager {
+    
+    static func getDataFromUrl(url: URL?, completion: @escaping (Data?, URLResponse?, Error?) -> ()) {
+        guard let url = url else {
+            print("Getting data from url failed. Wrong format for URL address.")
+            return
+        }
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            completion(data, response, error)
+        }.resume()
+    }
+    
+    static func downloadImage(url: URL?, completion: @escaping (UIImage?)->()) {
+        guard let url = url else { return }
+        RequestManager.getDataFromUrl(url: url) { data, response, error in
+            guard
+                let data = data,
+                error == nil
+                else {
+                    completion(nil)
+                    return
+            }
+            completion(UIImage(data: data))
+        }
+    }
+    
+}

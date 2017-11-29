@@ -12,8 +12,9 @@ class News {
     
     var title: String = ""
     var pubDate: String = ""
+    var imageURL: URL?
     var description: String = ""
-    var link: String = ""
+    var linkURL: URL?
     
     static func fillWithXML(_ xmlIndexer: XMLIndexer) -> News {
         let news = News()
@@ -25,13 +26,15 @@ class News {
         if let pubDate = pubDateXml.element?.text {
             news.pubDate = pubDate
         }
-        let descriptionXml = xmlIndexer["description"]
-        if let description = descriptionXml.element?.text {
-            news.description = description
+        let imageXml = xmlIndexer["enclosure"].element
+        if let imageLink = imageXml?.attribute(by: "url")?.text {
+            let url = URL(string: imageLink)
+            news.imageURL = url
         }
         let linkXml = xmlIndexer["link"]
         if let link = linkXml.element?.text {
-            news.link = link
+            let url = URL(string: link)
+            news.linkURL = url
         }
         return news
     }

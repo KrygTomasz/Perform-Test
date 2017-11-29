@@ -11,7 +11,11 @@ import UIKit
 class NewsTableViewCell: RowColorTableViewCell {
     
     @IBOutlet weak var containerView: UIView!
-    @IBOutlet weak var thumbnailImageView: UIImageView!
+    @IBOutlet weak var thumbnailImageView: UIImageView! {
+        didSet {
+            thumbnailImageView.contentMode = .scaleAspectFit
+        }
+    }
     @IBOutlet weak var titleLabel: UILabel! {
         didSet {
             titleLabel.textColor = .text
@@ -34,6 +38,7 @@ class NewsTableViewCell: RowColorTableViewCell {
             guard let news = news else { return }
             titleLabel.text = news.title
             publicationDateLabel.text = news.pubDate
+            RequestManager.downloadImage(url: news.imageURL, completion: setThumbnailImage(_:))
         }
     }
     
@@ -43,6 +48,12 @@ class NewsTableViewCell: RowColorTableViewCell {
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
+    }
+    
+    private func setThumbnailImage(_ image: UIImage?) {
+        DispatchQueue.main.async {
+            self.thumbnailImageView.image = image
+        }
     }
     
 }
