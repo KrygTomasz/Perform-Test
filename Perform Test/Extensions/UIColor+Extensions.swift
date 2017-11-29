@@ -40,6 +40,10 @@ extension UIColor {
         return UIColor(hex: "#062033")
     }
     
+    public class var selection: UIColor {
+        return UIColor(hex: "#3284BD")
+    }
+    
     public class var tint: UIColor {
         return UIColor(hex: "#1D4D6E")
     }

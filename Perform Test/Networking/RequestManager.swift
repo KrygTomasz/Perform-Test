@@ -11,19 +11,46 @@ import SWXMLHash
 
 class RequestManager {
     
-    private let newsEndpoint = "htt://www.mobilefeeds.performgroup.com/utilities/interviews/techtest/latestnews.xml"
-    private let scoresEndpoint = "http://www.mobilefeeds.performgroup.com/utilities/interviews/techtest/scores.xml"
-    private let standingsEndpoint = "http://www.mobilefeeds.performgroup.com/utilities/interviews/techtest/standings.xml"
+    private let urlAddress = "http://www.mobilefeeds.performgroup.com/utilities/interviews/techtest/"
+    private let newsEndpoint = "latestnews.xml"
+    private let scoresEndpoint = "scores.xml"
+    private let standingsEndpoint = "standings.xml"
     
     private func getGetRequest(for endpoint: String) -> URLRequest {
-        let url = URL(string: endpoint)!
+        let fullAddress = urlAddress + endpoint
+        let url = URL(string: fullAddress)!
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         return request
     }
     
+    typealias NewsCompletion = (Bool, [News])->()
+    func getNews(completion: @escaping NewsCompletion) {
+        let request = getGetRequest(for: newsEndpoint)
+        let session = URLSession.shared
+        var success: Bool = true
+        var newsArray: [News] = []
+        let task = session.dataTask(with: request) {
+            (data, response, error) in
+            guard let dataObj = data else {
+                NSLog("Error: \(String(describing: error))")
+                success = false
+                completion(success, newsArray)
+                return
+            }
+            let xml = SWXMLHash.parse(dataObj)
+            let items = xml["rss"]["channel"]["item"].all
+            for item in items {
+                let news = News.fillWithXML(item)
+                newsArray.append(news)
+            }
+            completion(success, newsArray)
+        }
+        task.resume()
+    }
+    
     typealias StandingsCompletion = (Bool, [Standing])->()
-    func getStanding(completion: @escaping StandingsCompletion) {
+    func getStandings(completion: @escaping StandingsCompletion) {
         let request = getGetRequest(for: standingsEndpoint)
         let session = URLSession.shared
         var success: Bool = true

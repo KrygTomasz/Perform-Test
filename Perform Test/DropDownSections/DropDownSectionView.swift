@@ -30,12 +30,17 @@ class DropDownSectionView: UIView {
     }
     
     private var contentView: UIView!
+    var sectionType: DropDownSectionType = .unknown
     var title: String = "" {
         didSet {
             titleButton.setTitle(title, for: .normal)
         }
     }
-    var sectionType: DropDownSectionType = .unknown
+    var selected: Bool = false {
+        didSet {
+            selected ? (containerView.backgroundColor = .selection) : (containerView.backgroundColor = .lightMain)
+        }
+    }
     var delegate: DropDownSectionDelegate?
     
     override init(frame: CGRect) {
@@ -75,7 +80,7 @@ extension DropDownSectionView {
     
 }
 
-//MARK: App Theme Method
+//MARK: UI Methods
 extension DropDownSectionView {
     
     func appTheme() {

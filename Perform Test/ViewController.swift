@@ -11,7 +11,7 @@ import MBProgressHUD
 
 class ViewController: UIViewController {
     
-    @IBOutlet weak var newsDropDownView: DropDownSectionView! {
+    @IBOutlet private weak var newsDropDownView: DropDownSectionView! {
         didSet {
             newsDropDownView.title = R.string.localizable.news()
             newsDropDownView.isHidden = true
@@ -20,7 +20,7 @@ class ViewController: UIViewController {
             newsDropDownView.delegate = self
         }
     }
-    @IBOutlet weak var scoresDropDownView: DropDownSectionView! {
+    @IBOutlet private weak var scoresDropDownView: DropDownSectionView! {
         didSet {
             scoresDropDownView.title = R.string.localizable.scores()
             scoresDropDownView.isHidden = true
@@ -29,7 +29,7 @@ class ViewController: UIViewController {
             scoresDropDownView.delegate = self
         }
     }
-    @IBOutlet weak var standingsDropDownView: DropDownSectionView! {
+    @IBOutlet private weak var standingsDropDownView: DropDownSectionView! {
         didSet {
             standingsDropDownView.title = R.string.localizable.standings()
             standingsDropDownView.isHidden = true
@@ -38,16 +38,17 @@ class ViewController: UIViewController {
             standingsDropDownView.delegate = self
         }
     }
-    @IBOutlet weak var dropDownSeparatorView: UIView! {
+    @IBOutlet private weak var dropDownSeparatorView: UIView! {
         didSet {
             dropDownSeparatorView.backgroundColor = .text
         }
     }
-    @IBOutlet weak var tableView: UITableView! {
+    @IBOutlet private weak var tableView: UITableView! {
         didSet {
             tableView.backgroundColor = .main
             tableView.rowHeight = UITableViewAutomaticDimension
             tableView.estimatedRowHeight = 100.0
+            tableView.register(R.nib.newsTableViewCell(), forCellReuseIdentifier: "NewsTableViewCell")
             tableView.register(R.nib.standingsTableViewCell(), forCellReuseIdentifier: "StandingsTableViewCell")
             tableView.register(R.nib.scoresTableViewCell(), forCellReuseIdentifier: "ScoresTableViewCell")
             tableView.register(R.nib.scoresHeaderView(), forHeaderFooterViewReuseIdentifier: "ScoresHeaderView")
@@ -61,12 +62,15 @@ class ViewController: UIViewController {
     private var tableViewType: DropDownSectionType = .news {
         didSet {
             stopTimer()
+            selectDropDownSection(ofType: tableViewType)
+            indicator?.show(description: "\(R.string.localizable.downloading())...")
             switch tableViewType {
             case .news:
-                self.tableView.reloadData()
-                return
+                RequestManager().getNews(completion: {success, news in
+                    self.news = news
+                    self.reloadDataAfterResponse(wasSuccessful: success)
+                })
             case .scores:
-                indicator?.show(description: "\(R.string.localizable.downloading())...")
                 RequestManager().getScores(completion: { success, scores, date in
                     self.scores = scores
                     self.reloadDataAfterResponse(wasSuccessful: success)
@@ -74,13 +78,12 @@ class ViewController: UIViewController {
                 })
                 startTimer()
             case .standings:
-                indicator?.show(description: "\(R.string.localizable.downloading())...")
-                RequestManager().getStanding(completion: { success, standings in
+                RequestManager().getStandings(completion: { success, standings in
                     self.standings = standings
                     self.reloadDataAfterResponse(wasSuccessful: success)
                 })
             default:
-                self.tableView.reloadData()
+                self.reloadDataAfterResponse(wasSuccessful: true)
                 return
             }
         }
@@ -93,17 +96,20 @@ class ViewController: UIViewController {
             setDropDownButton()
         }
     }
+    private var news: [News] = []
     private var standings: [Standing] = []
     private var scores: [Score] = []
     private var scoreDate: String = ""
     private var timer: Timer?
     private let AUTO_REFRESH_INTERVAL: Double = 30.0
+    private let HEADER_HEIGHT: CGFloat = 40.0
     
     override func viewDidLoad() {
         super.viewDidLoad()
         indicator = Indicator(in: self.view)
         self.view.backgroundColor = .tint
         initNavigationBar()
+        tableViewType = .news
     }
     
     private func initNavigationBar() {
@@ -123,6 +129,26 @@ class ViewController: UIViewController {
         }
         let rightBarButton = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(onDropDownButtonClicked))
         self.navigationItem.rightBarButtonItem  = rightBarButton
+    }
+    
+    private func selectDropDownSection(ofType type: DropDownSectionType) {
+        deselectAllDropDownSections()
+        switch type {
+        case .news:
+            newsDropDownView.selected = true
+        case .scores:
+            scoresDropDownView.selected = true
+        case .standings:
+            standingsDropDownView.selected = true
+        default:
+            return
+        }
+    }
+    
+    private func deselectAllDropDownSections() {
+        newsDropDownView.selected = false
+        scoresDropDownView.selected = false
+        standingsDropDownView.selected = false
     }
     
     @objc func onDropDownButtonClicked() {
@@ -190,7 +216,6 @@ extension ViewController: DropDownSectionDelegate {
     
     func onDropDownSectionClicked(_ dropDownSection: DropDownSectionView) {
         toggleDropDown()
-        print(dropDownSection.title)
         tableViewType = dropDownSection.sectionType
     }
     
@@ -206,7 +231,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch tableViewType {
         case .news:
-            return 0
+            return news.count
         case .scores:
             return scores.count
         case .standings:
@@ -219,7 +244,8 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch tableViewType {
         case .news:
-            return UITableViewCell()
+            guard let newsCell = tableView.dequeueReusableCell(withIdentifier: "NewsTableViewCell", for: indexPath) as? NewsTableViewCell else { return UITableViewCell() }
+            return newsCell
         case .scores:
             guard let scoresCell = tableView.dequeueReusableCell(withIdentifier: "ScoresTableViewCell", for: indexPath) as? ScoresTableViewCell else { return UITableViewCell() }
             return scoresCell
@@ -234,7 +260,9 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         switch tableViewType {
         case .news:
-            return
+            guard let newsCell = cell as? NewsTableViewCell else { return }
+            newsCell.news = news[indexPath.row]
+            newsCell.row = indexPath.row
         case .scores:
             guard let scoresCell = cell as? ScoresTableViewCell else { return }
             scoresCell.score = scores[indexPath.row]
@@ -262,20 +290,34 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 40
+        switch tableViewType {
+        case .news:
+            return 0
+        case .scores:
+            return HEADER_HEIGHT
+        case .standings:
+            return HEADER_HEIGHT
+        default:
+            return 0
+        }
     }
     
-    func getNewsHeader() -> UIView {
+}
+
+//MARK: Table headers preparation
+extension ViewController {
+    
+    private func getNewsHeader() -> UIView {
         return UIView()
     }
     
-    func getScoresHeader() -> UIView {
+    private func getScoresHeader() -> UIView {
         guard let scoresHeaderView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "ScoresHeaderView") as? ScoresHeaderView else { return UIView() }
         scoresHeaderView.dateString = scoreDate
         return scoresHeaderView
     }
     
-    func getStandingsHeader() -> UIView {
+    private func getStandingsHeader() -> UIView {
         guard let standingsHeaderView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "StandingsHeaderView") as? StandingsHeaderView else { return UIView() }
         return standingsHeaderView
     }
