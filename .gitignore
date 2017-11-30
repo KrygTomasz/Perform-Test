@@ -24,7 +24,6 @@ xcuserdata/
 ## Other
 *.moved-aside
 *.xcuserstate
-*.xcworkspacedata
 *.generated.swift
 
 ## Obj-C/Swift specific
