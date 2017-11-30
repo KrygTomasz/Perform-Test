@@ -55,15 +55,7 @@ class StandingsTableViewCell: RowColorTableViewCell {
     
     var standing: Standing? {
         didSet {
-            guard let standing = standing else { return }
-            rankLabel.text = standing.rank
-            clubNameLabel.text = standing.clubName
-            playedMatchesLabel.text = "\(standing.playedMatches)"
-            wonMatchesLabel.text = "\(standing.wins)"
-            drawMatchesLabel.text = "\(standing.draws)"
-            lostMatchesLabel.text = "\(standing.losts)"
-            goalDifferenceLabel.text = "\(standing.goalDifference)"
-            pointsLabel.text = "\(standing.points)"
+            prepareView(using: standing)
         }
     }
     
@@ -73,6 +65,18 @@ class StandingsTableViewCell: RowColorTableViewCell {
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(false, animated: animated)
+    }
+    
+    private func prepareView(using standing: Standing?) {
+        guard let standing = standing else { return }
+        rankLabel.text = standing.getRankString()
+        clubNameLabel.text = standing.clubName
+        playedMatchesLabel.text = "\(standing.playedMatches)"
+        wonMatchesLabel.text = "\(standing.wins)"
+        drawMatchesLabel.text = "\(standing.draws)"
+        lostMatchesLabel.text = "\(standing.losts)"
+        goalDifferenceLabel.text = "\(standing.goalDifference)"
+        pointsLabel.text = "\(standing.points)"
     }
     
 }

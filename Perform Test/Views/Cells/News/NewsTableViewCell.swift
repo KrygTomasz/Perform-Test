@@ -29,10 +29,7 @@ class NewsTableViewCell: RowColorTableViewCell {
     
     var news: News? {
         didSet {
-            guard let news = news else { return }
-            titleLabel.text = news.title
-            publicationDateLabel.text = news.getDateString(withFormat: "EEEE, dd MMMM yyyy, HH:mm")
-            RequestManager.downloadImage(url: news.imageURL, completion: setThumbnailImage(_:))
+            prepareView(using: news)
         }
     }
     
@@ -42,6 +39,13 @@ class NewsTableViewCell: RowColorTableViewCell {
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(false, animated: animated)
+    }
+    
+    private func prepareView(using news: News?) {
+        guard let news = news else { return }
+        titleLabel.text = news.title
+        publicationDateLabel.text = news.getDateString(withFormat: "EEEE, dd MMMM yyyy, HH:mm")
+        RequestManager.downloadImage(url: news.imageURL, completion: setThumbnailImage(_:))
     }
     
     private func setThumbnailImage(_ image: UIImage?) {

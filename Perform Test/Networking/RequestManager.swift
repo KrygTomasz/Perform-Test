@@ -49,31 +49,6 @@ class RequestManager {
         task.resume()
     }
     
-    typealias StandingsCompletion = (Bool, [Standing])->()
-    func getStandings(completion: @escaping StandingsCompletion) {
-        let request = getGetRequest(for: standingsEndpoint)
-        let session = URLSession.shared
-        var success: Bool = true
-        var standings: [Standing] = []
-        let task = session.dataTask(with: request) {
-            (data, response, error) in
-            guard let dataObj = data else {
-                NSLog("Error: \(String(describing: error))")
-                success = false
-                completion(success, standings)
-                return
-            }
-            let xml = SWXMLHash.parse(dataObj)
-            let rankingArray = xml["gsmrs"]["competition"]["season"]["round"]["resultstable"]["ranking"].all
-            for ranking in rankingArray {
-                let standing = Standing.fillWithXML(ranking.element)
-                standings.append(standing)
-            }
-            completion(success, standings)
-        }
-        task.resume()
-    }
-    
     typealias ScoresCompletion = (Bool, [Score], Date?)->()
     func getScores(completion: @escaping ScoresCompletion) {
         let request = getGetRequest(for: scoresEndpoint)
@@ -104,10 +79,35 @@ class RequestManager {
                     let name = parameter.element?.attribute(by: "name")?.text,
                     name == "date",
                     let dateObj = parameter.element?.attribute(by: "value")?.date(withFormat: "yyyy-MM-dd") {
-                        date = dateObj
+                    date = dateObj
                 }
             }
             completion(success, scores, date)
+        }
+        task.resume()
+    }
+    
+    typealias StandingsCompletion = (Bool, [Standing])->()
+    func getStandings(completion: @escaping StandingsCompletion) {
+        let request = getGetRequest(for: standingsEndpoint)
+        let session = URLSession.shared
+        var success: Bool = true
+        var standings: [Standing] = []
+        let task = session.dataTask(with: request) {
+            (data, response, error) in
+            guard let dataObj = data else {
+                NSLog("Error: \(String(describing: error))")
+                success = false
+                completion(success, standings)
+                return
+            }
+            let xml = SWXMLHash.parse(dataObj)
+            let rankingArray = xml["gsmrs"]["competition"]["season"]["round"]["resultstable"]["ranking"].all
+            for ranking in rankingArray {
+                let standing = Standing.fillWithXML(ranking.element)
+                standings.append(standing)
+            }
+            completion(success, standings)
         }
         task.resume()
     }

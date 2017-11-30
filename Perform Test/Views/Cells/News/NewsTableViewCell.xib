@@ -31,10 +31,10 @@
                                 </constraints>
                             </imageView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WXM-vS-rPU" userLabel="Title View">
-                                <rect key="frame" x="80" y="8" width="546" height="39"/>
+                                <rect key="frame" x="80" y="8" width="570" height="39"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GY7-Uo-nrX">
-                                        <rect key="frame" x="0.0" y="8" width="546" height="23"/>
+                                        <rect key="frame" x="0.0" y="8" width="570" height="23"/>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="19"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -49,7 +49,7 @@
                                 </constraints>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aWn-g2-FVS">
-                                <rect key="frame" x="80.5" y="54.5" width="545.5" height="17"/>
+                                <rect key="frame" x="80.5" y="54.5" width="569.5" height="17"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -59,10 +59,10 @@
                         <constraints>
                             <constraint firstItem="aWn-g2-FVS" firstAttribute="top" secondItem="WXM-vS-rPU" secondAttribute="bottom" constant="8" id="1c7-Jq-u5A"/>
                             <constraint firstAttribute="bottom" secondItem="aWn-g2-FVS" secondAttribute="bottom" constant="8" id="JAi-jf-7dp"/>
-                            <constraint firstAttribute="trailing" secondItem="aWn-g2-FVS" secondAttribute="trailing" constant="32" id="NsY-CQ-MA2"/>
+                            <constraint firstAttribute="trailing" secondItem="aWn-g2-FVS" secondAttribute="trailing" constant="8" id="NsY-CQ-MA2"/>
                             <constraint firstItem="WXM-vS-rPU" firstAttribute="top" secondItem="Suj-Ma-BMf" secondAttribute="top" constant="8" id="R1s-Ra-LZN"/>
                             <constraint firstAttribute="bottom" secondItem="cgw-pb-chw" secondAttribute="bottom" constant="8" id="WpN-L4-cMZ"/>
-                            <constraint firstAttribute="trailing" secondItem="WXM-vS-rPU" secondAttribute="trailing" constant="32" id="aGQ-ae-0nl"/>
+                            <constraint firstAttribute="trailing" secondItem="WXM-vS-rPU" secondAttribute="trailing" constant="8" id="aGQ-ae-0nl"/>
                             <constraint firstItem="WXM-vS-rPU" firstAttribute="leading" secondItem="cgw-pb-chw" secondAttribute="trailing" constant="8" id="c4E-8w-caE"/>
                             <constraint firstItem="cgw-pb-chw" firstAttribute="top" secondItem="Suj-Ma-BMf" secondAttribute="top" constant="8" id="e43-6T-APf"/>
                             <constraint firstItem="cgw-pb-chw" firstAttribute="leading" secondItem="Suj-Ma-BMf" secondAttribute="leading" constant="8" id="gXe-a4-4nI"/>

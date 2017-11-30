@@ -41,7 +41,7 @@ class DropDownSectionView: UIView {
             selected ? (containerView.backgroundColor = .selection) : (containerView.backgroundColor = .lightMain)
         }
     }
-    var delegate: DropDownSectionDelegate?
+    weak var delegate: DropDownSectionDelegate?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -59,10 +59,10 @@ class DropDownSectionView: UIView {
     
 }
 
-//MARK: Reusable DropDownView preparation methods
+//MARK: Reusable DropDownSectionView setup methods
 extension DropDownSectionView {
     
-    fileprivate func xibSetup() {
+    private func xibSetup() {
         contentView = loadViewFromNib()
         contentView.frame = bounds
         contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -70,7 +70,7 @@ extension DropDownSectionView {
         addSubview(contentView)
     }
     
-    fileprivate func loadViewFromNib() -> UIView {
+    private func loadViewFromNib() -> UIView {
         let bundle = Bundle(for: type(of: self))
         let nib = UINib(nibName: String(describing: type(of: self)), bundle: bundle)
         let view = nib.instantiate(withOwner: self, options: nil).first as! UIView

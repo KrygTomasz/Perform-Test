@@ -12,11 +12,9 @@ extension UIImage {
     
     func resize(to newSize: CGSize)-> UIImage{
         let hasAlpha = true
-        let scale: CGFloat = 0.0 // Use scale factor of main screen
-        
+        let scale: CGFloat = 0.0
         UIGraphicsBeginImageContextWithOptions(newSize, !hasAlpha, scale)
         self.draw(in: CGRect(origin: CGPoint.zero, size: newSize))
-        
         let scaledImage = UIGraphicsGetImageFromCurrentImageContext()
         return scaledImage!
     }

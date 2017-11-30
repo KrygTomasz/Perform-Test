@@ -59,36 +59,11 @@ class ViewController: MainViewController {
     }
     
     private var indicator: Indicator?
-    private var tableViewType: DropDownSectionType = .news {
+    private var sectionType: DropDownSectionType = .news {
         didSet {
             stopTimer()
-            selectDropDownSection(ofType: tableViewType)
             indicator?.show(description: "\(R.string.localizable.downloading())...")
-            switch tableViewType {
-            case .news:
-                RequestManager().getNews(completion: {success, news in
-                    self.news = news
-                    self.reloadDataAfterResponse(wasSuccessful: success)
-                })
-                tableView.allowsSelection = true
-            case .scores:
-                RequestManager().getScores(completion: { success, scores, date in
-                    self.scores = scores
-                    self.reloadDataAfterResponse(wasSuccessful: success)
-                    self.setScoresDate(to: date)
-                })
-                tableView.allowsSelection = false
-                startTimer()
-            case .standings:
-                RequestManager().getStandings(completion: { success, standings in
-                    self.standings = standings
-                    self.reloadDataAfterResponse(wasSuccessful: success)
-                })
-                tableView.allowsSelection = false
-            default:
-                self.reloadDataAfterResponse(wasSuccessful: true)
-                return
-            }
+            prepareDropDownSection(sectionType)
         }
     }
     private var isDropDownExpanded: Bool = false {
@@ -100,8 +75,14 @@ class ViewController: MainViewController {
         }
     }
     private var news: [News] = []
-    private var standings: [Standing] = []
     private var scores: [Score] = []
+    private var standings: [Standing] = [] {
+        didSet {
+            standings.sort(by: {
+                $0.rank < $1.rank
+            })
+        }
+    }
     private var scoreDate: String = ""
     private var timer: Timer?
     private let AUTO_REFRESH_INTERVAL: Double = 30.0
@@ -112,12 +93,44 @@ class ViewController: MainViewController {
         indicator = Indicator(in: self.view)
         self.view.backgroundColor = .tint
         initNavigationBar()
-        tableViewType = .news
+        sectionType = .news
     }
     
     private func initNavigationBar() {
         prepareNavigationBar(title: R.string.localizable.appName())
         setDropDownButton()
+    }
+    
+    private func reloadDataAfterResponse(wasSuccessful success: Bool) {
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+            self.scrollToTop()
+            self.indicator?.hide(success: success, failedDescription: R.string.localizable.checkConnectionTryAgain())
+        }
+    }
+    
+    private func scrollToTop() {
+        if tableView.numberOfRows(inSection: 0) > 0 {
+            let topIndexPath = IndexPath(row: 0, section: 0)
+            tableView.scrollToRow(at: topIndexPath, at: .top, animated: false)
+        }
+    }
+    
+}
+
+//MARK: DropDownSection delegate, preparation and handling
+extension ViewController: DropDownSectionDelegate {
+    
+    func onDropDownSectionClicked(_ dropDownSection: DropDownSectionView) {
+        toggleDropDown()
+        sectionType = dropDownSection.sectionType
+    }
+    
+    private func toggleDropDown() {
+        isDropDownExpanded = !isDropDownExpanded
+        UIView.animate(withDuration: 0.3, animations: {
+            self.view.layoutIfNeeded()
+        })
     }
     
     private func setDropDownButton() {
@@ -129,6 +142,25 @@ class ViewController: MainViewController {
         }
         let rightBarButton = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(onDropDownButtonClicked))
         self.navigationItem.rightBarButtonItem  = rightBarButton
+    }
+    
+    @objc private func onDropDownButtonClicked() {
+        toggleDropDown()
+    }
+    
+    private func prepareDropDownSection(_ type: DropDownSectionType) {
+        selectDropDownSection(ofType: sectionType)
+        switch type {
+        case .news:
+            prepareNewsSection()
+        case .scores:
+            prepareScoresSection()
+        case .standings:
+            prepareStandingsSection()
+        default:
+            self.reloadDataAfterResponse(wasSuccessful: true)
+            return
+        }
     }
     
     private func selectDropDownSection(ofType type: DropDownSectionType) {
@@ -151,46 +183,52 @@ class ViewController: MainViewController {
         standingsDropDownView.selected = false
     }
     
-    @objc func onDropDownButtonClicked() {
-        toggleDropDown()
-    }
-    
-    fileprivate func toggleDropDown() {
-        isDropDownExpanded = !isDropDownExpanded
-        UIView.animate(withDuration: 0.3, animations: {
-            self.view.layoutIfNeeded()
+    private func prepareNewsSection() {
+        RequestManager().getNews(completion: {success, news in
+            self.news = news
+            self.reloadDataAfterResponse(wasSuccessful: success)
         })
+        tableView.allowsSelection = true
     }
     
-    private func reloadDataAfterResponse(wasSuccessful success: Bool) {
-        DispatchQueue.main.async {
-            self.tableView.reloadData()
-            let topIndexPath = IndexPath(row: 0, section: 0)
-            self.tableView.scrollToRow(at: topIndexPath, at: .top, animated: false)
-            self.indicator?.hide(success: success, failedDescription: R.string.localizable.checkConnectionTryAgain())
-        }
+    private func prepareScoresSection() {
+        RequestManager().getScores(completion: { success, scores, date in
+            self.scores = scores
+            self.reloadDataAfterResponse(wasSuccessful: success)
+            self.setScoresDate(to: date)
+        })
+        tableView.allowsSelection = false
+        startTimer()
+    }
+    
+    private func prepareStandingsSection() {
+        RequestManager().getStandings(completion: { success, standings in
+            self.standings = standings
+            self.reloadDataAfterResponse(wasSuccessful: success)
+        })
+        tableView.allowsSelection = false
     }
     
 }
 
-//MARK: Handling scores view automatic update
+//MARK: Handling scores view update
 extension ViewController {
     
-    fileprivate func startTimer() {
+    private func startTimer() {
         timer = Timer.scheduledTimer(timeInterval: AUTO_REFRESH_INTERVAL, target: self, selector: #selector(onTimerUpdate), userInfo: nil, repeats: true)
     }
     
-    fileprivate func stopTimer() {
+    private func stopTimer() {
         timer?.invalidate()
     }
     
     @objc func onTimerUpdate() {
-        if tableViewType == .scores {
+        if sectionType == .scores {
             scoresUpdate()
         }
     }
     
-    fileprivate func scoresUpdate() {
+    private func scoresUpdate() {
         RequestManager().getScores(completion: { success, scores, date in
             if success {
                 self.scores = scores
@@ -202,7 +240,7 @@ extension ViewController {
     
     func setScoresDate(to date: Date?) {
         guard let date = date else {
-            scoreDate = "–"
+            scoreDate = ""
             NSLog("Wrong date format from web service")
             return
         }
@@ -213,17 +251,7 @@ extension ViewController {
     
 }
 
-//MARK: Handling DropDown sections click
-extension ViewController: DropDownSectionDelegate {
-    
-    func onDropDownSectionClicked(_ dropDownSection: DropDownSectionView) {
-        toggleDropDown()
-        tableViewType = dropDownSection.sectionType
-    }
-    
-}
-
-//MARK: TableView delegates
+//MARK: UITableView delegates
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -231,7 +259,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        switch tableViewType {
+        switch sectionType {
         case .news:
             return news.count
         case .scores:
@@ -244,7 +272,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        switch tableViewType {
+        switch sectionType {
         case .news:
             guard let newsCell = tableView.dequeueReusableCell(withIdentifier: "NewsTableViewCell", for: indexPath) as? NewsTableViewCell else { return UITableViewCell() }
             return newsCell
@@ -260,7 +288,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        switch tableViewType {
+        switch sectionType {
         case .news:
             guard let newsCell = cell as? NewsTableViewCell else { return }
             newsCell.news = news[indexPath.row]
@@ -279,7 +307,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        switch tableViewType {
+        switch sectionType {
         case .news:
             return getNewsHeader()
         case .scores:
@@ -292,7 +320,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        switch tableViewType {
+        switch sectionType {
         case .news:
             return 0
         case .scores:
@@ -305,7 +333,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        switch tableViewType {
+        switch sectionType {
         case .news:
             let row = indexPath.row
             let selectedNews = news[row]
@@ -324,7 +352,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     
 }
 
-//MARK: Table headers preparation
+//MARK: UITableView headers preparation
 extension ViewController {
     
     private func getNewsHeader() -> UIView {

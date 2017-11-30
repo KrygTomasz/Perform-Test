@@ -15,6 +15,9 @@ class MainViewController: UIViewController {
         self.navigationController?.navigationBar.isTranslucent = false
     }
     
+    /**
+     Prepares navigation bar with app theme and specified title.
+     */
     func prepareNavigationBar(title: String) {
         navigationController?.navigationBar.barStyle = .black
         navigationController?.navigationBar.barTintColor = .main

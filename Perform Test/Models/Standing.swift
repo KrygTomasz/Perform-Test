@@ -10,7 +10,7 @@ import SWXMLHash
 
 class Standing {
     
-    var rank: String = "0"
+    var rank: Int = 0
     var clubName: String = "–"
     var playedMatches: Int = 0
     var wins: Int = 0
@@ -27,7 +27,7 @@ class Standing {
     
     static func fillWithXML(_ xml: XMLElement?) -> Standing {
         let standing = Standing()
-        if let rank = xml?.attribute(by: "rank")?.text {
+        if let rank = xml?.attribute(by: "rank")?.int() {
             standing.rank = rank
         }
         if let clubName = xml?.attribute(by: "club_name")?.text {
@@ -55,6 +55,14 @@ class Standing {
             standing.points = points
         }
         return standing
+    }
+    
+    func getRankString() -> String {
+        var rankString = "\(rank)"
+        if rank < 10 {
+            rankString = "0" + rankString
+        }
+        return rankString
     }
     
 }

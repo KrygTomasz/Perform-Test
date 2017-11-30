@@ -19,7 +19,7 @@
 		223619851FCAE4440017157B /* StandingsHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 223619841FCAE4440017157B /* StandingsHeaderView.xib */; };
 		2298BCF01FCA289E00F98D38 /* RequestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2298BCEF1FCA289E00F98D38 /* RequestManager.swift */; };
 		2298BCF31FCA310500F98D38 /* Standing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2298BCF21FCA310500F98D38 /* Standing.swift */; };
-		2298BCF51FCA3B9C00F98D38 /* XMLAttribute+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2298BCF41FCA3B9C00F98D38 /* XMLAttribute+Extensions.swift */; };
+		2298BCF51FCA3B9C00F98D38 /* XML+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2298BCF41FCA3B9C00F98D38 /* XML+Extensions.swift */; };
 		2298BCFA1FCA3DA700F98D38 /* StandingsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2298BCF81FCA3DA700F98D38 /* StandingsTableViewCell.swift */; };
 		2298BCFB1FCA3DA700F98D38 /* StandingsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2298BCF91FCA3DA700F98D38 /* StandingsTableViewCell.xib */; };
 		2298BCFD1FCA551900F98D38 /* Indicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2298BCFC1FCA551900F98D38 /* Indicator.swift */; };
@@ -53,7 +53,7 @@
 		223619841FCAE4440017157B /* StandingsHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StandingsHeaderView.xib; sourceTree = "<group>"; };
 		2298BCEF1FCA289E00F98D38 /* RequestManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestManager.swift; sourceTree = "<group>"; };
 		2298BCF21FCA310500F98D38 /* Standing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Standing.swift; sourceTree = "<group>"; };
-		2298BCF41FCA3B9C00F98D38 /* XMLAttribute+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XMLAttribute+Extensions.swift"; sourceTree = "<group>"; };
+		2298BCF41FCA3B9C00F98D38 /* XML+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XML+Extensions.swift"; sourceTree = "<group>"; };
 		2298BCF81FCA3DA700F98D38 /* StandingsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandingsTableViewCell.swift; sourceTree = "<group>"; };
 		2298BCF91FCA3DA700F98D38 /* StandingsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StandingsTableViewCell.xib; sourceTree = "<group>"; };
 		2298BCFC1FCA551900F98D38 /* Indicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Indicator.swift; sourceTree = "<group>"; };
@@ -96,8 +96,12 @@
 			isa = PBXGroup;
 			children = (
 				22C95DAB1FC9848100C9ED35 /* Main.storyboard */,
+				2227724A1FCF2BB200B1595F /* MainViewController.swift */,
 				22C95DA91FC9848100C9ED35 /* ViewController.swift */,
 				2227724E1FCF2E6400B1595F /* WebViewController.swift */,
+				2298BCF71FCA3D9000F98D38 /* Cells */,
+				22C95DC51FC99B3000C9ED35 /* DropDownSection */,
+				2236197A1FCAE0EB0017157B /* Section Headers */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -179,7 +183,7 @@
 			children = (
 				22C95DC11FC993BD00C9ED35 /* UIColor+Extensions.swift */,
 				22C95DC31FC999BA00C9ED35 /* UIImage+Extensions.swift */,
-				2298BCF41FCA3B9C00F98D38 /* XMLAttribute+Extensions.swift */,
+				2298BCF41FCA3B9C00F98D38 /* XML+Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -217,15 +221,12 @@
 			isa = PBXGroup;
 			children = (
 				22C95DA71FC9848100C9ED35 /* AppDelegate.swift */,
+				22C95DB61FC9848100C9ED35 /* Info.plist */,
 				222772501FCF2E9C00B1595F /* Views */,
-				2298BCF71FCA3D9000F98D38 /* Cells */,
-				2236197A1FCAE0EB0017157B /* Section Headers */,
 				2298BCEE1FCA288000F98D38 /* Networking */,
 				2298BCF11FCA30A000F98D38 /* Models */,
-				22C95DC51FC99B3000C9ED35 /* DropDownSections */,
 				2298BCF61FCA3BAD00F98D38 /* Extensions */,
 				22C95DBC1FC984B800C9ED35 /* Supporting Files */,
-				22C95DB61FC9848100C9ED35 /* Info.plist */,
 			);
 			path = "Perform Test";
 			sourceTree = "<group>";
@@ -233,7 +234,6 @@
 		22C95DBC1FC984B800C9ED35 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				2227724A1FCF2BB200B1595F /* MainViewController.swift */,
 				2298BCFC1FCA551900F98D38 /* Indicator.swift */,
 				22C95DB11FC9848100C9ED35 /* Assets.xcassets */,
 				22C95DB31FC9848100C9ED35 /* LaunchScreen.storyboard */,
@@ -244,13 +244,13 @@
 			path = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		22C95DC51FC99B3000C9ED35 /* DropDownSections */ = {
+		22C95DC51FC99B3000C9ED35 /* DropDownSection */ = {
 			isa = PBXGroup;
 			children = (
 				22C95DBD1FC987C600C9ED35 /* DropDownSectionView.swift */,
 				22C95DBF1FC987DC00C9ED35 /* DropDownSectionView.xib */,
 			);
-			path = DropDownSections;
+			path = DropDownSection;
 			sourceTree = "<group>";
 		};
 		6EDC34CDFCFB0307ABE6FC55 /* Frameworks */ = {
@@ -429,7 +429,7 @@
 				2298BCFD1FCA551900F98D38 /* Indicator.swift in Sources */,
 				221C7C3B1FCB8DFB00BA5236 /* News.swift in Sources */,
 				2298BCFF1FCA5B3900F98D38 /* Score.swift in Sources */,
-				2298BCF51FCA3B9C00F98D38 /* XMLAttribute+Extensions.swift in Sources */,
+				2298BCF51FCA3B9C00F98D38 /* XML+Extensions.swift in Sources */,
 				22C95DB01FC9848100C9ED35 /* Perform_Test.xcdatamodeld in Sources */,
 				2298BCF31FCA310500F98D38 /* Standing.swift in Sources */,
 				22C95DA81FC9848100C9ED35 /* AppDelegate.swift in Sources */,

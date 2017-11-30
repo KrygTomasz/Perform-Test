@@ -1,5 +1,5 @@
 //
-//  XMLAttribute+Extensions.swift
+//  XML+Extensions.swift
 //  Perform Test
 //
 //  Created by Kryg Tomasz on 26.11.2017.
